@@ -1,0 +1,2079 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="navy">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>H.G. Prasanna Indrajith | GIS &amp; Spatial Data Science Portfolio</title>
+  <meta name="description" content="Personal GIS, Hydrological Modeling, Remote Sensing, and Cartographic Portfolio of H.G. Prasanna Indrajith — BSc (Hons) GIS Undergraduate, University of Peradeniya." />
+<!-- Google SEO & OpenGraph Meta Tags -->
+  <meta name="keywords" content="GIS Sri Lanka, Hydrology Flood Maps Sri Lanka, Land Use Map Kandy, Remote Sensing Sri Lanka, H.G. Prasanna Indrajith, Cartography, ArcGIS Pro, QGIS Maps" />
+  <meta name="author" content="H.G. Prasanna Indrajith Karunathilaka" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="H.G. Prasanna Indrajith | Sri Lanka GIS & Cartographic Map Gallery" />
+  <meta property="og:description" content="Explore and download high-resolution hydrological, flood hazard, land use, and 3D terrain maps of Sri Lanka." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* ============================================================
+       MULTI-THEME CSS VARIABLES (DEFAULT: DEEP SPACE NAVY & CYAN)
+       ============================================================ */
+    :root, [data-theme="navy"] {
+      --bg-deep: #070d18;
+      --bg-surface: #0d1627;
+      --bg-card: rgba(15, 25, 45, 0.85);
+      --bg-glass: rgba(10, 18, 34, 0.88);
+      --accent: #00e5ff;
+      --accent-soft: rgba(0, 229, 255, 0.14);
+      --accent-glow: rgba(0, 229, 255, 0.35);
+      --gold: #eab308;
+      --gold-soft: rgba(234, 179, 8, 0.15);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: rgba(0, 229, 255, 0.18);
+      --border-strong: rgba(0, 229, 255, 0.45);
+      --grid-line: rgba(0, 229, 255, 0.045);
+      --shadow-card: 0 18px 42px rgba(0, 0, 0, 0.5);
+    }
+
+    [data-theme="emerald"] {
+      --bg-deep: #05130e;
+      --bg-surface: #0a1f18;
+      --bg-card: rgba(12, 34, 26, 0.88);
+      --bg-glass: rgba(7, 23, 17, 0.9);
+      --accent: #10b981;
+      --accent-soft: rgba(16, 185, 129, 0.16);
+      --accent-glow: rgba(16, 185, 129, 0.35);
+      --gold: #f59e0b;
+      --gold-soft: rgba(245, 158, 11, 0.15);
+      --text-main: #ecfdf5;
+      --text-muted: #9ca3af;
+      --border: rgba(16, 185, 129, 0.22);
+      --border-strong: rgba(16, 185, 129, 0.5);
+      --grid-line: rgba(16, 185, 129, 0.05);
+      --shadow-card: 0 18px 42px rgba(0, 0, 0, 0.55);
+    }
+
+    [data-theme="gold"] {
+      --bg-deep: #0d0b09;
+      --bg-surface: #171411;
+      --bg-card: rgba(28, 24, 19, 0.88);
+      --bg-glass: rgba(18, 15, 12, 0.92);
+      --accent: #f59e0b;
+      --accent-soft: rgba(245, 158, 11, 0.16);
+      --accent-glow: rgba(245, 158, 11, 0.35);
+      --gold: #38bdf8;
+      --gold-soft: rgba(56, 189, 248, 0.15);
+      --text-main: #fafaf9;
+      --text-muted: #a8a29e;
+      --border: rgba(245, 158, 11, 0.24);
+      --border-strong: rgba(245, 158, 11, 0.52);
+      --grid-line: rgba(245, 158, 11, 0.045);
+      --shadow-card: 0 18px 42px rgba(0, 0, 0, 0.6);
+    }
+
+    [data-theme="light"] {
+      --bg-deep: #f4f7fb;
+      --bg-surface: #ffffff;
+      --bg-card: rgba(255, 255, 255, 0.95);
+      --bg-glass: rgba(255, 255, 255, 0.92);
+      --accent: #0284c7;
+      --accent-soft: rgba(2, 132, 199, 0.1);
+      --accent-glow: rgba(2, 132, 199, 0.25);
+      --gold: #d97706;
+      --gold-soft: rgba(217, 119, 6, 0.12);
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border: rgba(2, 132, 199, 0.2);
+      --border-strong: rgba(2, 132, 199, 0.45);
+      --grid-line: rgba(2, 132, 199, 0.06);
+      --shadow-card: 0 12px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--bg-deep);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.65;
+      overflow-x: hidden;
+      min-height: 100vh;
+      transition: background-color 0.35s ease, color 0.35s ease;
+    }
+
+    /* Topographic Coordinate Grid Background */
+    .topo-bg {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background-image:
+        radial-gradient(circle at 82% 15%, var(--accent-soft), transparent 42%),
+        radial-gradient(circle at 12% 85%, var(--gold-soft), transparent 40%),
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 52px 52px, 52px 52px;
+    }
+
+    /* ============================================================
+       NAVIGATION BAR & LIVE THEME SWITCHER
+       ============================================================ */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; height: 72px;
+      background: var(--bg-glass);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(1rem, 4vw, 3rem);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none;
+    }
+    .brand-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: var(--accent-soft); border: 1px solid var(--border-strong);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent); font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 0.95rem;
+    }
+    .brand-text { display: flex; flex-direction: column; }
+    .brand-name {
+      font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.02rem;
+      letter-spacing: 0.05em; color: var(--text-main); line-height: 1.1;
+    }
+    .brand-sub {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+      color: var(--accent); letter-spacing: 0.14em; text-transform: uppercase;
+    }
+
+    .nav-links { display: flex; align-items: center; gap: 0.25rem; list-style: none; }
+    .nav-btn {
+      background: transparent; border: none; color: var(--text-muted);
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.85rem; font-weight: 600;
+      padding: 8px 13px; border-radius: 8px; cursor: pointer; transition: all 0.2s;
+    }
+    .nav-btn:hover { color: var(--accent); background: var(--accent-soft); }
+    .nav-btn.active { color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 -2px 0 var(--accent); }
+
+    .nav-actions { display: flex; align-items: center; gap: 10px; position: relative; }
+
+    /* Theme Palette Button & Popover */
+    .theme-trigger {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: var(--bg-surface); border: 1px solid var(--border-strong);
+      color: var(--accent); font-size: 1.05rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.25s;
+    }
+    .theme-trigger:hover { transform: scale(1.06); box-shadow: 0 0 15px var(--accent-glow); }
+
+    .theme-menu {
+      position: absolute; top: 50px; right: 0; width: 230px;
+      background: var(--bg-surface); border: 1px solid var(--border-strong);
+      border-radius: 14px; padding: 12px; box-shadow: var(--shadow-card);
+      display: none; flex-direction: column; gap: 6px; z-index: 1200;
+    }
+    .theme-menu.open { display: flex; animation: fadeIn 0.2s ease; }
+    .theme-menu-title {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
+      text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted);
+      padding: 2px 6px 6px; border-bottom: 1px solid var(--border);
+    }
+    .theme-option {
+      display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+      border-radius: 8px; border: 1px solid transparent; background: transparent;
+      color: var(--text-main); font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; text-align: left; transition: all 0.2s;
+    }
+    .theme-option:hover, .theme-option.active {
+      background: var(--accent-soft); border-color: var(--border-strong);
+    }
+    .swatch { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; border: 2px solid #fff; }
+
+    .admin-trigger {
+      background: var(--bg-surface); border: 1px solid var(--border);
+      color: var(--text-muted); font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem; padding: 7px 11px; border-radius: 8px; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .admin-trigger:hover { border-color: var(--accent); color: var(--accent); }
+    .admin-trigger.logged-in { border-color: #10b981; color: #10b981; background: rgba(16,185,129,0.1); }
+
+    .mobile-toggle {
+      display: none; background: transparent; border: 1px solid var(--border);
+      color: var(--accent); font-size: 1.25rem; padding: 6px 10px; border-radius: 8px; cursor: pointer;
+    }
+
+    /* ============================================================
+       PAGE CONTAINER & ANIMATIONS
+       ============================================================ */
+    main { padding-top: 72px; }
+    .page-view { display: none; animation: fadeIn 0.35s ease; }
+    .page-view.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .container { max-width: 1240px; margin: 0 auto; padding: clamp(2.5rem, 5vw, 4rem) clamp(1rem, 4vw, 2rem); }
+
+    /* ============================================================
+       EXECUTIVE PERSONAL PORTFOLIO HERO (2-COLUMN)
+       ============================================================ */
+    .hero-wrapper {
+      max-width: 1240px; margin: 0 auto;
+      padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 4vw, 2rem) 2.5rem;
+      display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 3rem; align-items: center;
+    }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-soft); border: 1px solid var(--border-strong);
+      color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+      padding: 6px 14px; border-radius: 50px; margin-bottom: 1.2rem;
+    }
+    .pulse-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #10b981;
+      box-shadow: 0 0 10px #10b981; animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+    .hero-name {
+      font-family: 'Cinzel', serif; font-size: clamp(2.1rem, 4.2vw, 3.45rem);
+      font-weight: 800; line-height: 1.12; color: var(--text-main); margin-bottom: 0.6rem;
+    }
+    .hero-name span { color: var(--accent); }
+    .hero-role {
+      font-size: clamp(1rem, 1.5vw, 1.2rem); font-weight: 600;
+      color: var(--gold); margin-bottom: 1.1rem;
+    }
+    .hero-bio {
+      color: var(--text-muted); font-size: 1rem; max-width: 620px; margin-bottom: 1.8rem;
+    }
+    .hero-cta-group { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 1.8rem; }
+    .btn-primary {
+      background: var(--accent); color: #050a14; font-weight: 700; font-size: 0.88rem;
+      padding: 12px 24px; border-radius: 10px; border: none; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s;
+      box-shadow: 0 6px 20px var(--accent-glow);
+    }
+    .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.08); }
+    .btn-outline {
+      background: var(--bg-surface); color: var(--text-main); font-weight: 600; font-size: 0.88rem;
+      padding: 12px 22px; border-radius: 10px; border: 1px solid var(--border-strong);
+      cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s;
+      text-decoration: none;
+    }
+    .btn-outline:hover { background: var(--accent-soft); color: var(--accent); transform: translateY(-2px); }
+
+    .hero-socials { display: flex; flex-wrap: wrap; gap: 10px; }
+    .social-chip {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.74rem;
+      color: var(--text-muted); background: var(--bg-card); border: 1px solid var(--border);
+      padding: 6px 12px; border-radius: 8px; text-decoration: none; transition: all 0.2s;
+    }
+    .social-chip:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* Right Column: GIS Analyst Profile & Live Telemetry Card */
+    .analyst-card {
+      background: var(--bg-card); border: 1px solid var(--border-strong);
+      border-radius: 20px; padding: 1.6rem; box-shadow: var(--shadow-card);
+      backdrop-filter: blur(14px); position: relative; overflow: hidden;
+    }
+    .analyst-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--gold));
+    }
+    .analyst-header { display: flex; align-items: center; gap: 16px; margin-bottom: 1.2rem; }
+    .analyst-avatar {
+      width: 84px; height: 84px; border-radius: 16px; object-fit: cover;
+      border: 2px solid var(--accent); background: var(--bg-surface); flex-shrink: 0;
+    }
+    .analyst-meta h3 { font-size: 1.05rem; font-weight: 700; color: var(--text-main); }
+    .analyst-meta p { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+    .reg-tag {
+      display: inline-block; margin-top: 6px; font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; background: var(--gold-soft); color: var(--gold);
+      border: 1px solid rgba(234,179,8,0.3); padding: 2px 8px; border-radius: 5px;
+    }
+    .telemetry-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+      background: var(--bg-deep); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px; margin-bottom: 1rem;
+    }
+    .tele-box span {
+      display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+      color: var(--text-muted); text-transform: uppercase;
+    }
+    .tele-box strong {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent);
+    }
+    .analyst-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center;
+    }
+    .stat-mini {
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 6px;
+    }
+    .stat-mini strong { display: block; font-size: 1.25rem; color: var(--accent); font-family: 'Cinzel', serif; }
+    .stat-mini span { font-size: 0.68rem; color: var(--text-muted); }
+
+    /* ============================================================
+       THESIS SPOTLIGHT & SECTION HEADERS
+       ============================================================ */
+    .section-head {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;
+    }
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 4px;
+    }
+    .section-title { font-family: 'Cinzel', serif; font-size: clamp(1.5rem, 2.8vw, 2.1rem); font-weight: 700; }
+
+    .thesis-banner {
+      background: linear-gradient(135deg, var(--bg-card), var(--accent-soft));
+      border: 1px solid var(--border-strong); border-radius: 18px;
+      padding: clamp(1.5rem, 3vw, 2.2rem); margin-bottom: 3.5rem;
+      display: grid; grid-template-columns: 1.4fr 0.6fr; gap: 2rem; align-items: center;
+      box-shadow: var(--shadow-card);
+    }
+    .thesis-badge {
+      display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+      background: var(--gold-soft); color: var(--gold); border: 1px solid var(--gold);
+      padding: 4px 12px; border-radius: 50px; margin-bottom: 0.8rem;
+    }
+    .thesis-banner h3 { font-family: 'Cinzel', serif; font-size: 1.35rem; margin-bottom: 0.6rem; line-height: 1.35; }
+    .thesis-banner p { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1rem; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tech-pill {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+      background: var(--bg-deep); border: 1px solid var(--border);
+      color: var(--accent); padding: 4px 10px; border-radius: 6px;
+    }
+
+    /* ============================================================
+       4-PILLAR TECHNICAL ARSENAL
+       ============================================================ */
+    .pillars-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.4rem;
+    }
+    .pillar-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.5rem; transition: all 0.25s;
+    }
+    .pillar-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .pillar-icon { font-size: 1.6rem; margin-bottom: 0.7rem; }
+    .pillar-card h4 { font-size: 1.02rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main); }
+    .pillar-card p { font-size: 0.84rem; color: var(--text-muted); margin-bottom: 1rem; }
+
+    /* ============================================================
+       GALLERY, PROJECT CARDS & DOWNLOAD LOCK BUTTONS
+       ============================================================ */
+    .gallery-controls {
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; margin-bottom: 2rem;
+    }
+    .filter-bar { display: flex; flex-wrap: wrap; gap: 8px; }
+    .filter-btn {
+      background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
+      font-size: 0.8rem; font-weight: 600; padding: 8px 15px; border-radius: 50px; cursor: pointer; transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--accent); color: #050a14; border-color: var(--accent); font-weight: 700;
+    }
+    .search-input {
+      background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main);
+      padding: 9px 16px; border-radius: 10px; font-size: 0.86rem; min-width: 260px; outline: none;
+    }
+    .search-input:focus { border-color: var(--accent); }
+
+    .maps-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.7rem;
+    }
+    .map-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s;
+      box-shadow: var(--shadow-card);
+    }
+    .map-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+    .card-thumb {
+      position: relative; height: 215px; background: var(--bg-deep); overflow: hidden; cursor: pointer;
+    }
+    .card-thumb img {
+      width: 100%; height: 100%; object-fit: cover; transition: transform 0.45s ease;
+    }
+    .map-card:hover .card-thumb img { transform: scale(1.05); }
+    .card-cat-badge {
+      position: absolute; top: 12px; left: 12px;
+      background: rgba(7, 13, 24, 0.85); backdrop-filter: blur(8px);
+      border: 1px solid var(--accent); color: var(--accent);
+      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; padding: 4px 10px; border-radius: 6px;
+    }
+    .card-multi-badge {
+      position: absolute; bottom: 10px; right: 10px;
+      background: rgba(7, 13, 24, 0.85); color: #fff;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; padding: 3px 8px; border-radius: 5px;
+    }
+    .card-body { padding: 1.35rem; flex: 1; display: flex; flex-direction: column; }
+    .card-title { font-size: 1.08rem; font-weight: 700; margin-bottom: 0.45rem; cursor: pointer; }
+    .card-title:hover { color: var(--accent); }
+    .card-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.1rem; flex: 1; }
+
+    .card-actions {
+      display: flex; flex-wrap: wrap; gap: 8px; padding-top: 0.9rem; border-top: 1px solid var(--border);
+    }
+    .btn-card {
+      flex: 1; font-size: 0.78rem; font-weight: 600; padding: 8px 10px; border-radius: 8px;
+      cursor: pointer; text-align: center; border: 1px solid var(--border-strong);
+      background: var(--accent-soft); color: var(--accent); transition: all 0.2s;
+    }
+    .btn-card:hover { background: var(--accent); color: #050a14; }
+    .btn-lock-dl {
+      flex: 1; font-size: 0.78rem; font-weight: 700; padding: 8px 10px; border-radius: 8px;
+      cursor: pointer; text-align: center; border: 1px solid var(--gold);
+      background: var(--gold-soft); color: var(--gold); transition: all 0.2s;
+    }
+    .btn-lock-dl:hover { background: var(--gold); color: #050a14; }
+
+    /* ============================================================
+       CERTIFICATES VAULT & LOCKED FOLDER
+       ============================================================ */
+    .cert-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;
+    }
+    .cert-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      overflow: hidden; position: relative; transition: all 0.25s;
+    }
+    .cert-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .cert-preview {
+      height: 190px; background: var(--bg-deep); position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cert-preview img {
+      width: 100%; height: 100%; object-fit: cover; user-select: none; pointer-events: none;
+    }
+    .cert-watermark {
+      position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,13,24,0.8), transparent);
+      display: flex; align-items: flex-end; justify-content: space-between; padding: 10px 14px;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent);
+    }
+    .locked-vault-box {
+      margin-top: 3rem; background: var(--bg-card); border: 1px dashed var(--gold);
+      border-radius: 18px; padding: 2rem;
+    }
+
+    /* ============================================================
+       MODALS (PROJECT + PDF READER, EMAIL GATE, ADMIN)
+       ============================================================ */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(3, 7, 15, 0.88);
+      backdrop-filter: blur(10px); z-index: 2000; display: none;
+      align-items: center; justify-content: center; padding: 1rem; overflow-y: auto;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--bg-surface); border: 1px solid var(--border-strong);
+      border-radius: 18px; width: 100%; max-width: 920px; max-height: 92vh;
+      overflow-y: auto; padding: clamp(1.2rem, 3vw, 2rem); position: relative;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75);
+    }
+    .modal-close {
+      position: sticky; top: 0; float: right; z-index: 10;
+      width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border-strong);
+      background: var(--bg-deep); color: var(--text-main); font-size: 1.1rem; cursor: pointer;
+    }
+    .modal-close:hover { background: #ef4444; color: #fff; border-color: #ef4444; }
+
+    /* Slider & PDF Reader inside Modal */
+    .slider-stage {
+      position: relative; background: var(--bg-deep); border-radius: 12px;
+      overflow: hidden; margin-bottom: 1.2rem; border: 1px solid var(--border);
+    }
+    .slider-stage img { width: 100%; max-height: 460px; object-fit: contain; display: block; margin: 0 auto; }
+    .slider-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(7,13,24,0.85); color: var(--accent); border: 1px solid var(--accent);
+      width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.1rem;
+    }
+    .slider-arrow.prev { left: 12px; }
+    .slider-arrow.next { right: 12px; }
+
+    .pdf-viewer-frame {
+      width: 100%; height: 500px; border: 1px solid var(--border-strong);
+      border-radius: 12px; margin-top: 1rem; background: #1e293b;
+    }
+
+    /* Form Controls */
+    .form-group { margin-bottom: 1rem; }
+    .form-group label {
+      display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px;
+    }
+    .form-control {
+      width: 100%; background: var(--bg-deep); border: 1px solid var(--border);
+      color: var(--text-main); padding: 10px 14px; border-radius: 9px; font-size: 0.88rem; outline: none;
+    }
+    .form-control:focus { border-color: var(--accent); }
+
+    /* Admin Floating Bar */
+    .admin-bar {
+      position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+      background: var(--bg-surface); border: 1px solid #10b981; border-radius: 50px;
+      padding: 8px 18px; display: none; align-items: center; gap: 10px; flex-wrap: wrap;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.65); z-index: 1500;
+    }
+    .admin-bar.visible { display: flex; }
+
+    /* Tables */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    .data-table th, .data-table td {
+      padding: 11px 14px; border-bottom: 1px solid var(--border); text-align: left;
+    }
+    .data-table th {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+      text-transform: uppercase; color: var(--accent); background: var(--bg-deep);
+    }
+
+    footer {
+      border-top: 1px solid var(--border); padding: 2.2rem 1rem; text-align: center;
+      color: var(--text-muted); font-size: 0.82rem; margin-top: 4rem;
+    }
+
+    @media (max-width: 920px) {
+      .hero-wrapper, .thesis-banner { grid-template-columns: 1fr; }
+      .nav-links {
+        display: none; position: absolute; top: 72px; left: 0; right: 0;
+        background: var(--bg-surface); flex-direction: column; padding: 1rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-links.open { display: flex; }
+      .mobile-toggle { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topo-bg"></div>
+
+  <!-- ============================================================
+       NAVIGATION BAR WITH LIVE THEME PALETTE ICON
+       ============================================================ -->
+  <nav class="navbar">
+    <div class="brand" onclick="switchPage('home')">
+      <div class="brand-icon">GIS</div>
+      <div class="brand-text">
+        <span class="brand-name">H.G.P.I. KARUNATHILAKA</span>
+        <span class="brand-sub">Spatial Data Science Portfolio</span>
+      </div>
+    </div>
+
+    <ul class="nav-links" id="navLinks">
+      <li><button class="nav-btn active" data-page="home" onclick="switchPage('home')">Home</button></li>
+      <li><button class="nav-btn" data-page="gallery" onclick="switchPage('gallery')">Map Gallery</button></li>
+      <li><button class="nav-btn" data-page="webmaps" onclick="switchPage('webmaps')">Interactive Web Maps</button></li>
+      <li><button class="nav-btn" data-page="certificates" onclick="switchPage('certificates')">Certificates Vault</button></li>
+      <li><button class="nav-btn" data-page="sources" onclick="switchPage('sources')">Methodology &amp; Data</button></li>
+      <li><button class="nav-btn" data-page="about" onclick="switchPage('about')">About &amp; CV</button></li>
+    </ul>
+
+    <div class="nav-actions">
+      <!-- Theme Color Switcher Icon -->
+      <button class="theme-trigger" id="themeToggleBtn" title="Change Theme &amp; Colors" onclick="toggleThemeMenu()">🎨</button>
+      <div class="theme-menu" id="themeMenu">
+        <div class="theme-menu-title">Select Portfolio Theme</div>
+        <button class="theme-option active" data-t="navy" onclick="setTheme('navy')">
+          <span class="swatch" style="background:#00e5ff;"></span> Deep Space Navy
+        </button>
+        <button class="theme-option" data-t="emerald" onclick="setTheme('emerald')">
+          <span class="swatch" style="background:#10b981;"></span> Emerald Topo Dark
+        </button>
+        <button class="theme-option" data-t="gold" onclick="setTheme('gold')">
+          <span class="swatch" style="background:#f59e0b;"></span> Obsidian &amp; Gold
+        </button>
+        <button class="theme-option" data-t="light" onclick="setTheme('light')">
+          <span class="swatch" style="background:#0284c7;"></span> Daylight Cartography
+        </button>
+      </div>
+
+      <button class="admin-trigger" id="adminLockBtn" onclick="openAdminLogin()">🔒 Admin</button>
+      <button class="mobile-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- ============================================================
+         PAGE 1: EXECUTIVE PERSONAL PORTFOLIO HOME
+         ============================================================ -->
+    <section id="page-home" class="page-view active">
+      <div class="hero-wrapper">
+        <div>
+          <div class="status-pill">
+            <span class="pulse-dot"></span> Available for GIS, Remote Sensing &amp; Hydrological Modeling Projects
+          </div>
+          <h1 class="hero-name">H.G. Prasanna <span>Indrajith</span></h1>
+          <div class="hero-role">BSc (Hons) GIS Undergraduate | Hydrological Modeler &amp; Spatial Data Scientist</div>
+          <p class="hero-bio">
+            Specializing in compound flood modeling, LiDAR terrain analysis, multi-criteria spatial decision systems, and interactive Web GIS applications. Transforming complex Earth Observation and hydrological datasets into actionable spatial intelligence across Sri Lanka.
+          </p>
+          <div class="hero-cta-group">
+            <button class="btn-primary" onclick="switchPage('gallery')">🗺️ Explore Map Gallery</button>
+            <button class="btn-outline" onclick="switchPage('webmaps')">🌐 Launch Live Web Maps</button>
+            <button class="btn-outline" onclick="switchPage('about')">📄 View Full CV</button>
+          </div>
+
+
+<div class="hero-socials">
+            <a href="mailto:a21gis034@arts.pdn.ac.lk" class="social-chip">✉ a21gis034@arts.pdn.ac.lk</a>
+            <span class="social-chip">📍 Sri Lanka</span>
+            <span class="social-chip">🛰️ SLD99 / EPSG:5235</span>
+          </div>
+        </div>
+
+        <!-- GIS Analyst Profile & Live Telemetry Card -->
+        <div class="analyst-card">
+          <div class="analyst-header">
+            <img src="images/profile-photo.jpg" alt="H.G. Prasanna Indrajith" class="analyst-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Prasanna+Indrajith&background=00e5ff&color=070d18&size=200&bold=true'" />
+            <div class="analyst-meta">
+              <h3>H.G.P.I. Karunathilaka</h3>
+              <p>Dept. of Geography, Faculty of Arts<br/>University of Peradeniya</p>
+              <span class="reg-tag">BSc (Hons) GIS • 4th Year Undergraduate</span>
+            </div>
+          </div>
+
+
+
+          <div class="analyst-stats">
+            <div class="stat-mini">
+              <strong id="statProjectsCount">0</strong>
+              <span>Spatial Maps</span>
+            </div>
+            <div class="stat-mini">
+              <strong id="statWebMapsCount">0</strong>
+              <span>Live Web Apps</span>
+            </div>
+            <div class="stat-mini">
+              <strong id="statCertsCount">0</strong>
+              <span>Credentials</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container" style="padding-top: 1rem;">
+        <!-- Flagship Research Spotlight -->
+        <div class="thesis-banner">
+          <div>
+            <span class="thesis-badge">🎓 Final-Year Undergraduate Dissertation Spotlight</span>
+            <h3>Assessing Compound Flood Vulnerability Under Extreme Rainfall and Dam Releases: Ulapane to Gelioya Reach</h3>
+            <p>
+              Integrating coupled hydrological-hydraulic modeling (HEC-HMS &amp; HEC-RAS 1D/2D) with high-resolution LiDAR DEMs from the Survey Department of Sri Lanka to simulate multi-hazard flood inundation scenarios along the Mahaweli River corridor.
+            </p>
+            <div class="tag-row">
+              <span class="tech-pill">HEC-HMS</span>
+              <span class="tech-pill">HEC-RAS</span>
+              <span class="tech-pill">LiDAR DEM</span>
+              <span class="tech-pill">ArcGIS Pro</span>
+              <span class="tech-pill">Compound Flood Modeling</span>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <button class="btn-primary" onclick="switchPage('gallery')">View Flood &amp; Hydro Maps →</button>
+          </div>
+        </div>
+
+        <!-- Featured Projects Preview on Home Page -->
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Selected Cartographic &amp; Analytical Work</span>
+            <h2 class="section-title">Featured Spatial Projects</h2>
+          </div>
+          <button class="btn-outline" onclick="switchPage('gallery')">View All Maps &amp; Reports →</button>
+        </div>
+        <div class="maps-grid" id="homeFeaturedGrid" style="margin-bottom: 4rem;"></div>
+
+        <!-- 4-Pillar Technical Arsenal -->
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Core Competencies &amp; Software Stack</span>
+            <h2 class="section-title">Technical Arsenal</h2>
+          </div>
+        </div>
+        <div class="pillars-grid">
+          <div class="pillar-card">
+            <div class="pillar-icon">🗺️</div>
+            <h4>Desktop GIS &amp; 3D Cartography</h4>
+            <p>High-precision vector digitizing, LiDAR intensity extraction, Least-Cost Path routing, and publication-grade cartographic layouts.</p>
+            <div class="tag-row">
+              <span class="tech-pill">ArcGIS Pro</span><span class="tech-pill">QGIS</span><span class="tech-pill">AutoCAD</span>
+            </div>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-icon">🛰️</div>
+            <h4>Remote Sensing &amp; Cloud EO</h4>
+            <p>Multi-temporal Sentinel-2 &amp; SAR flood/landslide detection, NDVI/NDWI spectral indices, and cloud geospatial processing.</p>
+            <div class="tag-row">
+              <span class="tech-pill">Google Earth Engine</span><span class="tech-pill">Sentinel-1/2</span><span class="tech-pill">ALOS PALSAR</span>
+            </div>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-icon">🌊</div>
+            <h4>Hydrological &amp; Flood Modeling</h4>
+            <p>Watershed delineation, rainfall-runoff simulation, dam-release hydraulic routing, and compound flood hazard mapping.</p>
+            <div class="tag-row">
+              <span class="tech-pill">HEC-RAS</span><span class="tech-pill">HEC-HMS</span><span class="tech-pill">ArcHydro</span>
+            </div>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-icon">💻</div>
+            <h4>Spatial Programming &amp; Web GIS</h4>
+            <p>Automated spatial pipelines, statistical geocomputation, and interactive web mapping dashboards.</p>
+            <div class="tag-row">
+              <span class="tech-pill">R (terra / sf)</span><span class="tech-pill">Python (ArcPy)</span><span class="tech-pill">ArcGIS Online</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PAGE 2: MAP GALLERY & EMAIL-GATED DOWNLOADS
+         ============================================================ -->
+    <section id="page-gallery" class="page-view">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Public Cartographic Archive • Sri Lanka</span>
+            <h2 class="section-title">Spatial Map Gallery &amp; Technical Reports</h2>
+          </div>
+        </div>
+
+        <div class="gallery-controls">
+          <div class="filter-bar" id="filterBar">
+            <button class="filter-btn active" data-cat="all" onclick="filterGallery('all', this)">All Maps</button>
+            <button class="filter-btn" data-cat="hydrology" onclick="filterGallery('hydrology', this)">Hydrology &amp; Flood</button>
+            <button class="filter-btn" data-cat="remote-sensing" onclick="filterGallery('remote-sensing', this)">Remote Sensing</button>
+            <button class="filter-btn" data-cat="land-use" onclick="filterGallery('land-use', this)">Land Use &amp; Planning</button>
+            <button class="filter-btn" data-cat="web-gis" onclick="filterGallery('web-gis', this)">Web GIS</button>
+            <button class="filter-btn" data-cat="3d" onclick="filterGallery('3d', this)">3D &amp; Terrain</button>
+          </div>
+          <input type="text" class="search-input" id="gallerySearch" placeholder="🔍 Search maps, districts, or tools..." oninput="renderGallery()" />
+        </div>
+
+        <div class="maps-grid" id="galleryGrid"></div>
+      </div>
+    </section>
+<!-- ============================================================
+         PAGE 3: DEDICATED INTERACTIVE WEB MAPS (ArcGIS Online & Leaflet)
+         ============================================================ -->
+    <section id="page-webmaps" class="page-view">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Live Geospatial Applications</span>
+            <h2 class="section-title">Interactive Web Maps (ArcGIS Online &amp; Leaflet)</h2>
+          </div>
+          <p style="color:var(--text-muted); max-width:520px; font-size:0.9rem;">
+            Interact directly with live cloud web maps below—zoom, pan, toggle spatial layers, and inspect attribute popups without leaving the portfolio.
+          </p>
+        </div>
+        <div id="webMapsContainer" style="display:flex; flex-direction:column; gap:2.5rem;"></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PAGE 4: CERTIFICATES & CREDENTIALS VAULT (PUBLIC + LOCKED)
+         ============================================================ -->
+    <section id="page-certificates" class="page-view">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Verified Academic &amp; Technical Credentials</span>
+            <h2 class="section-title">Certificates &amp; Licenses</h2>
+          </div>
+        </div>
+
+        <!-- Public Showcase -->
+        <div class="cert-grid" id="publicCertGrid"></div>
+
+        <!-- Locked Folder Section -->
+        <div class="locked-vault-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.2rem;">
+            <div>
+              <h3 style="font-family:'Cinzel',serif; color:var(--gold); font-size:1.25rem;">
+                🔒 Protected Academic &amp; Institutional Vault
+              </h3>
+              <p style="color:var(--text-muted); font-size:0.86rem; margin-top:4px;">
+                Sensitive transcripts, university endorsement letters, and official identity-linked credentials are encrypted via Supabase RLS and visible only when unlocked by the portfolio owner.
+              </p>
+            </div>
+            <button class="btn-outline" id="unlockVaultBtn" onclick="openAdminLogin()">🔑 Unlock Vault (Admin)</button>
+          </div>
+          <div class="cert-grid" id="lockedCertGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PAGE 5: METHODOLOGY & DATA SOURCES CATALOGUE
+         ============================================================ -->
+    <section id="page-sources" class="page-view">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Reproducible GIS Workflows &amp; Metadata</span>
+            <h2 class="section-title">Methodology &amp; Spatial Data Sources</h2>
+          </div>
+        </div>
+
+        <div class="pillars-grid" style="margin-bottom:3rem;">
+          <div class="pillar-card">
+            <span class="eyebrow">Step 01</span>
+            <h4>Geodetic Harmonization</h4>
+            <p>All Sri Lankan vector and raster layers are standardized to <strong>SLD99 / Sri Lanka Grid 1999 (EPSG:5235)</strong> or <strong>Kandawala (EPSG:5234)</strong> for accurate metric area and hydraulic calculations.</p>
+          </div>
+          <div class="pillar-card">
+            <span class="eyebrow">Step 02</span>
+            <h4>Hydro-Conditioning &amp; DEM QA</h4>
+            <p>LiDAR and ALOS PALSAR 12.5m elevation models undergo pit-filling, stream burning, and cross-section extraction prior to HEC-HMS &amp; HEC-RAS simulations.</p>
+          </div>
+          <div class="pillar-card">
+            <span class="eyebrow">Step 03</span>
+            <h4>Cartographic &amp; ISO 19115 Standards</h4>
+            <p>Every map output includes verified scale bars, coordinate graticules, hierarchical legends, and documented data lineage.</p>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:16px; padding:1.5rem; overflow-x:auto;">
+          <h3 style="font-family:'Cinzel',serif; margin-bottom:1rem;">Authoritative Data Repositories</h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Dataset / Repository</th>
+                <th>Data Type</th>
+                <th>Provider</th>
+                <th>Link</th>
+              </tr>
+            </thead>
+            <tbody id="sourcesTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+
+
+
+<!-- ============================================================
+         PAGE 6: COMPREHENSIVE ABOUT ME, GIS DOMAINS & QUALIFICATIONS
+         ============================================================ -->
+    <section id="page-about" class="page-view">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Curriculum Vitae • Geospatial Capabilities • Experience</span>
+            <h2 class="section-title">About H.G. Prasanna Indrajith</h2>
+          </div>
+          <a href="mailto:a21gis034@arts.pdn.ac.lk" class="btn-primary">✉ Contact for Projects / CV</a>
+        </div>
+
+        <!-- 1. EXECUTIVE BIO & PORTRAIT PHOTO CARD (NO REG NO / NO CITY NAMES) -->
+        <div class="thesis-banner" style="grid-template-columns: 0.45fr 1.55fr; align-items: start; margin-bottom: 3rem;">
+          <div style="text-align: center;">
+            <img src="images/profile-photo.jpg" alt="H.G. Prasanna Indrajith"
+                 style="width: 100%; max-width: 240px; aspect-ratio: 1/1; object-fit: cover; border-radius: 20px; border: 2px solid var(--accent); box-shadow: 0 12px 30px var(--accent-glow);"
+                 onerror="this.src='https://ui-avatars.com/api/?name=Prasanna+Indrajith&background=00e5ff&color=070d18&size=300&bold=true'" />
+            <div style="margin-top: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; color: var(--accent);">
+              BSc (Hons) GIS • 4th Year
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">
+              University of Peradeniya
+            </div>
+          </div>
+
+          <div>
+            <span class="thesis-badge">Spatial Data Scientist &amp; Hydrological Modeler</span>
+            <h3 style="font-size: 1.55rem; margin-bottom: 0.7rem;">H.G. Prasanna Indrajith Karunathilaka</h3>
+            <p style="color: var(--text-main); font-size: 0.95rem; margin-bottom: 0.9rem;">
+              I am a fourth-year <strong>BSc (Hons) Geographical Information Science (GIS)</strong> undergraduate in the Department of Geography, Faculty of Arts, University of Peradeniya, pursuing a parallel <strong>Diploma in Human Resource Management (HRM)</strong>.
+            </p>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.2rem;">
+              My work bridges physical watershed hydrology, satellite Earth Observation, high-precision LiDAR vector extraction, and interactive Web GIS engineering. Whether simulating compound flood inundation along river basins or building publication-grade cartographic atlases, I focus on turning raw spatial data into clear, decision-ready intelligence.
+            </p>
+            <div class="tag-row">
+              <span class="tech-pill">📍 Sri Lanka</span>
+              <span class="tech-pill">✉ a21gis034@arts.pdn.ac.lk</span>
+              <span class="tech-pill">🌐 SLD99 / WGS84 Geodetic Standards</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. CORE GIS & GEOSPATIAL DOMAINS -->
+        <div class="section-head" style="margin-bottom: 1.4rem;">
+          <div>
+            <span class="eyebrow">Specialized Geospatial Knowledge</span>
+            <h3 class="section-title" style="font-size: 1.55rem;">Core GIS Domains &amp; Analytical Capabilities</h3>
+          </div>
+        </div>
+
+        <div class="pillars-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 3.5rem;">
+          <div class="pillar-card">
+            <div class="pillar-icon">🌊</div>
+            <h4>Hydrological &amp; Compound Flood Modeling</h4>
+            <p>Watershed delineation, rainfall-runoff modeling (HEC-HMS), 1D/2D unsteady hydraulic routing (HEC-RAS), dam-release flood inundation mapping, and stream network morphometry.</p>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-icon">🛰️</div>
+            <h4>Remote Sensing &amp; Earth Observation</h4>
+            <p>Multi-temporal Sentinel-1 SAR &amp; Sentinel-2 optical analysis, NDVI/NDWI/NDBI spectral indexing, supervised LULC classification, and cloud-scale processing in Google Earth Engine.</p>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-icon">🛣️</div>
+            <h4>LiDAR Feature Extraction &amp; Network GIS</h4>
+            <p>High-accuracy digitizing of road networks, footpaths, and corridors from high-resolution orthophotos and LiDAR intensity rasters, plus Least-Cost Path engineering routing.</p>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-icon">📊</div>
+            <h4>Spatial Statistics &amp; MCDA / AHP</h4>
+            <p>Multi-Criteria Decision Analysis (Analytic Hierarchy Process), kernel density estimation, hotspot/cluster analysis, and spatial suitability modeling for disaster &amp; urban planning.</p>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-icon">🌐</div>
+            <h4>Web GIS &amp; Mobile Field Data Collection</h4>
+            <p>Deploying interactive web maps via ArcGIS Online &amp; GeoServer, and configuring GNSS field survey workflows with ArcGIS Field Maps, Survey123, QField, and KoboToolbox.</p>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-icon">🎨</div>
+            <h4>Cartographic Design &amp; Visual Hierarchy</h4>
+            <p>Combining analytical GIS outputs with Adobe Photoshop and Canva to craft clean typography, balanced color palettes, 3D terrain relief, and executive map layouts.</p>
+          </div>
+        </div>
+
+        <!-- 3. SOFTWARE & TOOL HANDLING (ICON-BASED CARDS) -->
+        <div class="section-head" style="margin-bottom: 1.4rem;">
+          <div>
+            <span class="eyebrow">Software Stack &amp; Technical Ecosystem</span>
+            <h3 class="section-title" style="font-size: 1.55rem;">GIS, Modeling &amp; Programming Tool Handling</h3>
+          </div>
+        </div>
+
+        <div class="pillars-grid" style="grid-template-columns: repeat(auto-fit, minmax(275px, 1fr)); margin-bottom: 3.5rem;">
+          <div class="pillar-card">
+            <span class="eyebrow">Desktop GIS &amp; CAD</span>
+            <h4 style="margin-bottom: 1.1rem;">Core Mapping &amp; Digitizing</h4>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <div style="display:flex; align-items:center; gap:12px; background:var(--bg-deep); border:1px solid var(--border); padding:10px 12px; border-radius:10px;">
+                <img src="https://cdn.simpleicons.org/esri/00e5ff" alt="ArcGIS" style="width:24px; height:24px; flex-shrink:0;" onerror="this.style.display='none'" />
+                <div>
+                  <strong style="display:block; font-size:0.86rem; color:var(--text-main);">ArcGIS Pro &amp; ArcMap</strong>
+                  <span style="font-size:0.74rem; color:var(--text-muted);">3D Terrain, Spatial Analyst &amp; Cartography</span>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; background:var(--bg-deep); border:1px solid var(--border); padding:10px 12px; border-radius:10px;">
+                <img src="https://cdn.simpleicons.org/qgis/589632" alt="QGIS" style="width:24px; height:24px; flex-shrink:0;" onerror="this.style.display='none'" />
+                <div>
+                  <strong style="display:block; font-size:0.86rem; color:var(--text-main);">QGIS Desktop</strong>
+                  <span style="font-size:0.74rem; color:var(--text-muted);">LiDAR Feature Extraction &amp; Vector Digitizing</span>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; background:var(--bg-deep); border:1px solid var(--border); padding:10px 12px; border-radius:10px;">
+                <img src="https://cdn.simpleicons.org/autodesk/0696D7" alt="AutoCAD" style="width:24px; height:24px; flex-shrink:0;" onerror="this.style.display='none'" />
+                <div>
+                  <strong style="display:block; font-size:0.86rem; color:var(--text-main);">AutoCAD</strong>
+                  <span style="font-size:0.74rem; color:var(--text-muted);">Engineering Plans &amp; Corridor Layouts</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pillar-card">
+            <span class="eyebrow">Modeling &amp; Cloud EO</span>
+            <h4 style="margin-bottom: 1.1rem;">Hydrology &amp; Remote Sensing</h4>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <div style="display:flex; align-items:center; gap:12px; background:var(--bg-deep); border:1px solid var(--border); padding:10px 12px; border-radius:10px;">
+                <img src="https://cdn.simpleicons.org/googleearth/4285F4" alt="GEE" style="width:24px; height:24px; flex-shrink:0;" onerror="this.style.display='none'" />
+                <div>
+                  <strong style="display:block; font-size:0.86rem; color:var(--text-main);">Google Earth Engine (GEE)</strong>
+                  <span style="font-size:0.74rem; color:var(--text-muted);">Cloud Sentinel-1/2 &amp; Spectral Indexing</span>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; background:var(--bg-deep); border:1px solid var(--border); padding:10px 12px; border-radius:10px;">
+                <div style="width:24px; height:24px; border-radius:6px; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem; flex-shrink:0;">🌊</div>
+                <div>
+                  <strong style="display:block; font-size:0.86rem; color:var(--text-main);">HEC-RAS &amp; HEC-HMS</strong>
+                  <span style="font-size:0.74rem; color:var(--text-muted);">1D/2D Flood Routing &amp; Runoff Simulation</span>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; background:var(--bg-deep); border:1px solid var(--border); padding:10px 12px; border-radius:10px;">
+                <div style="width:24px; height:24px; border-radius:6px; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem; flex-shrink:0;">🛰️</div>
+                <div>
+                  <strong style="display:block; font-size:0.86rem; color:var(--text-main);">SNAP &amp; Copernicus EO</strong>
+                  <span style="font-size:0.74rem; color:var(--text-muted);">SAR Radar Processing &amp; ALOS DEMs</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pillar-card">
+            <span class="eyebrow">Data Science &amp; Coding</span>
+            <h4 style="margin-bottom: 1.1rem;">Spatial Programming</h4>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <div style="display:flex; align-items:center; gap:12px; background:var(--bg-deep); border:1px solid var(--border); padding:10px 12px; border-radius:10px;">
+                <img src="https://cdn.simpleicons.org/r/276DC3" alt="RStudio" style="width:24px; height:24px; flex-shrink:0;" onerror="this.style.display='none'" />
+                <div>
+                  <strong style="display:block; font-size:0.86rem; color:var(--text-main);">R &amp; RStudio</strong>
+                  <span style="font-size:0.74rem; color:var(--text-muted);">terra, sf, ggplot2 &amp; ggspatial Workflows</span>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; background:var(--bg-deep); border:1px solid var(--border); padding:10px 12px; border-radius:10px;">
+                <img src="https://cdn.simpleicons.org/python/3776AB" alt="Python" style="width:24px; height:24px; flex-shrink:0;" onerror="this.style.display='none'" />
+                <div>
+                  <strong style="display:block; font-size:0.86rem; color:var(--text-main);">Python Geospatial</strong>
+                  <span style="font-size:0.74rem; color:var(--text-muted);">ArcPy, GeoPandas &amp; Automated Pipelines</span>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; background:var(--bg-deep); border:1px solid var(--border); padding:10px 12px; border-radius:10px;">
+                <img src="https://cdn.simpleicons.org/supabase/3FCF8E" alt="WebGIS" style="width:24px; height:24px; flex-shrink:0;" onerror="this.style.display='none'" />
+                <div>
+                  <strong style="display:block; font-size:0.86rem; color:var(--text-main);">Full-Stack Web GIS</strong>
+                  <span style="font-size:0.74rem; color:var(--text-muted);">HTML/JS, Leaflet &amp; Supabase Cloud</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pillar-card">
+            <span class="eyebrow">Field &amp; Visual Design</span>
+            <h4 style="margin-bottom: 1.1rem;">Web GIS, Field &amp; Cartography</h4>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <div style="display:flex; align-items:center; gap:12px; background:var(--bg-deep); border:1px solid var(--border); padding:10px 12px; border-radius:10px;">
+                <img src="https://cdn.simpleicons.org/arcgis/007AC2" alt="ArcGIS Online" style="width:24px; height:24px; flex-shrink:0;" onerror="this.style.display='none'" />
+                <div>
+                  <strong style="display:block; font-size:0.86rem; color:var(--text-main);">ArcGIS Online &amp; GeoServer</strong>
+                  <span style="font-size:0.74rem; color:var(--text-muted);">Cloud Web Apps &amp; OGC Spatial Services</span>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; background:var(--bg-deep); border:1px solid var(--border); padding:10px 12px; border-radius:10px;">
+                <div style="width:24px; height:24px; border-radius:6px; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem; flex-shrink:0;">📱</div>
+                <div>
+                  <strong style="display:block; font-size:0.86rem; color:var(--text-main);">Field Maps, Survey123 &amp; Kobo</strong>
+                  <span style="font-size:0.74rem; color:var(--text-muted);">Mobile GNSS Field Data &amp; QFieldCloud</span>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; background:var(--bg-deep); border:1px solid var(--border); padding:10px 12px; border-radius:10px;">
+                <img src="https://cdn.simpleicons.org/adobephotoshop/31A8FF" alt="Photoshop" style="width:24px; height:24px; flex-shrink:0;" onerror="this.style.display='none'" />
+                <div>
+                  <strong style="display:block; font-size:0.86rem; color:var(--text-main);">Adobe Photoshop &amp; Canva</strong>
+                  <span style="font-size:0.74rem; color:var(--text-muted);">Cartographic Layout &amp; Visual Hierarchy</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. EDUCATION, VERIFIED CERTIFICATIONS & EXPERIENCE -->
+        <div class="pillars-grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+          <div class="pillar-card">
+            <span class="eyebrow">Academic &amp; Professional Qualifications</span>
+            <h4>BSc (Hons) in Geographical Information Science (GIS)</h4>
+            <p style="color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:0.78rem;">University of Peradeniya • 2023 – Present (4th Year)</p>
+            <p>Undergraduate Dissertation: <em>"Assessing Compound Flood Vulnerability Under Extreme Rainfall and Dam Releases: Ulapane to Gelioya Reach"</em>.</p>
+            
+            <hr style="border-color:var(--border); margin:1rem 0;" />
+            <h4>Diploma in Human Resource Management (HRM)</h4>
+            <p>Building leadership, project coordination, and organizational management capabilities alongside technical geospatial training.</p>
+            
+            <hr style="border-color:var(--border); margin:1rem 0;" />
+            <h4>Verified Technical Certifications</h4>
+            <ul style="color:var(--text-muted); font-size:0.84rem; padding-left:1.1rem; display:flex; flex-direction:column; gap:6px; margin-top:6px;">
+              <li><strong>Fundamentals of Remote Sensing</strong> — NASA Applied Remote Sensing Training (ARSET) Program[cite: 5]</li>
+              <li><strong>AI Fundamentals</strong> — Lanka Education And Research Network (LEARN) &amp; AVPN, supported by Google.org &amp; ADB <em>(ID: LEARN/AF/26/B02/1418)</em>[cite: 4]</li>
+              <li><strong>Python for Beginners</strong> — Dept. of Computer Science &amp; Engineering / CODL, University of Moratuwa <em>(Code: 8BjnjTAvyT)</em>[cite: 6]</li>
+              <li><strong>Python for Everyone</strong> — Esri Academy</li>
+            </ul>
+            <button class="btn-outline" style="margin-top:1rem; font-size:0.8rem; padding:8px 14px;" onclick="switchPage('certificates')">🏅 View Certificates Vault →</button>
+          </div>
+
+          <div class="pillar-card">
+            <span class="eyebrow">Industry &amp; Field Experience</span>
+            <h4>Remote GIS Digitizing &amp; Feature Extraction</h4>
+            <p style="color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:0.78rem;">International Geospatial Company (Remote) • 2026</p>
+            <p>High-precision extraction of road networks, footpaths, and transportation corridors from orthophotos and LiDAR intensity rasters using QGIS, ArcGIS Pro, and Google Earth Engine.</p>
+            
+            <hr style="border-color:var(--border); margin:1rem 0;" />
+            <h4>Post-Disaster Field Survey &amp; Campus Risk Mapping</h4>
+            <p style="color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:0.78rem;">University of Peradeniya • Post-Ditwa Cyclone (2026)</p>
+            <p>Volunteer GNSS field data collection, flood inundation mapping, and landslide risk assessment across the university campus, producing interactive web maps for vulnerability communication.</p>
+            
+            <hr style="border-color:var(--border); margin:1rem 0;" />
+            <h4>Academic &amp; Community Leadership</h4>
+            <p>Field Visit Logistics Coordinator (Dept. of Geography) &amp; Volunteer G.C.E. A/L &amp; O/L Mathematics Mentor.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+  <!-- ============================================================
+       FLOATING ADMIN CONTROL BAR (VISIBLE ONLY WHEN LOGGED IN)
+       ============================================================ -->
+  <div class="admin-bar" id="adminBar">
+    <span style="font-family:'JetBrains Mono',monospace; font-size:0.74rem; color:#10b981; font-weight:700;">● ADMIN ACTIVE</span>
+    <button class="btn-card" onclick="openProjectEditor()">+ Add Map / Report</button>
+    <button class="btn-card" onclick="openCertEditor()">+ Add Certificate</button>
+    <button class="btn-lock-dl" onclick="openLogsModal()">📥 Download Logs</button>
+    <button class="admin-trigger" onclick="adminLogout()">Logout</button>
+  </div>
+
+  <!-- ============================================================
+       MODAL 1: PROJECT DETAILS, IMAGE SLIDER & BUILT-IN PDF READER
+       ============================================================ -->
+  <div class="modal-overlay" id="projectModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('projectModal')">✕</button>
+      <span class="eyebrow" id="pmCat">Category</span>
+      <h2 id="pmTitle" style="font-family:'Cinzel',serif; margin-bottom:0.8rem;">Project Title</h2>
+
+      <!-- Image Carousel Stage -->
+      <div class="slider-stage" id="pmSliderStage">
+        <img id="pmSliderImg" src="" alt="Map Plate" />
+        <button class="slider-arrow prev" id="pmPrevBtn" onclick="slideImage(-1)">‹</button>
+        <button class="slider-arrow next" id="pmNextBtn" onclick="slideImage(1)">›</button>
+      </div>
+      <div id="pmSlideCounter" style="text-align:center; font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--text-muted); margin-bottom:1rem;"></div>
+
+      <div id="pmDesc" style="color:var(--text-muted); font-size:0.92rem; margin-bottom:1.5rem; white-space:pre-line;"></div>
+
+      <!-- Action Buttons inside Modal -->
+      <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:1rem;">
+        <button class="btn-primary" id="pmUnlockDownloadBtn">🔒 Download High-Res Map (Free with Email)</button>
+        <button class="btn-outline" id="pmTogglePdfBtn" style="display:none;" onclick="togglePdfFrame()">📄 Read Technical Report (PDF)</button>
+        <a class="btn-outline" id="pmWebMapLink" href="#" target="_blank" style="display:none;">🌐 Open Live Web App ↗</a>
+      </div>
+
+      <!-- Embedded PDF Report Reader -->
+      <div id="pmPdfContainer" style="display:none;">
+        <iframe id="pmPdfFrame" class="pdf-viewer-frame" src=""></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 2: EMAIL-GATED HIGH-RES DOWNLOAD UNLOCK & NOTIFICATION
+       ============================================================ -->
+  <div class="modal-overlay" id="downloadGateModal">
+    <div class="modal-box" style="max-width:480px;">
+      <button class="modal-close" onclick="closeModal('downloadGateModal')">✕</button>
+      <span class="eyebrow">Free Public Access • Attribution Required</span>
+      <h3 style="font-family:'Cinzel',serif; font-size:1.35rem; margin-bottom:0.5rem;">Unlock High-Resolution Download</h3>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.2rem;">
+        Enter your name and email address to unlock <strong id="dgItemTitle" style="color:var(--accent);">this dataset</strong>. Your download link will open immediately.
+      </p>
+
+      <form id="downloadGateForm" onsubmit="handleGatedDownload(event)">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" class="form-control" id="dgName" required placeholder="e.g. Kasun Perera" />
+        </div>
+        <div class="form-group">
+          <label>Email Address *</label>
+          <input type="email" class="form-control" id="dgEmail" required placeholder="name@example.com" />
+        </div>
+        <div class="form-group">
+          <label>Intended Purpose *</label>
+          <select class="form-control" id="dgPurpose" required>
+            <option value="Academic / University Study">Academic / University Study</option>
+            <option value="Research & Scientific Publication">Research &amp; Scientific Publication</option>
+            <option value="Urban / Disaster Planning">Urban / Disaster Planning</option>
+            <option value="Personal / Educational Reference">Personal / Educational Reference</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary" id="dgSubmitBtn" style="width:100%; justify-content:center;">
+          🔓 Verify Email &amp; Start Download
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 3: ADMIN LOGIN
+       ============================================================ -->
+  <div class="modal-overlay" id="adminLoginModal">
+    <div class="modal-box" style="max-width:420px;">
+      <button class="modal-close" onclick="closeModal('adminLoginModal')">✕</button>
+      <span class="eyebrow">Restricted Control Panel</span>
+      <h3 style="font-family:'Cinzel',serif; margin-bottom:1rem;">Admin Authentication</h3>
+      <form onsubmit="handleAdminLogin(event)">
+        <div class="form-group">
+          <label>Admin Email</label>
+          <input type="email" class="form-control" id="adminEmail" required placeholder="a21gis034@arts.pdn.ac.lk" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" class="form-control" id="adminPass" required placeholder="••••••••" />
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 4: ADMIN ADD / EDIT PROJECT (MAPS, HIGH-RES & PDF REPORT)
+       ============================================================ -->
+  <div class="modal-overlay" id="projectEditorModal">
+    <div class="modal-box" style="max-width:650px;">
+      <button class="modal-close" onclick="closeModal('projectEditorModal')">✕</button>
+      <h3 style="font-family:'Cinzel',serif; margin-bottom:1rem;" id="peHeading">Add Spatial Project / Map</h3>
+      <form onsubmit="saveProjectToSupabase(event)">
+        <input type="hidden" id="peId" />
+        <div class="form-group">
+          <label>Project Title *</label>
+          <input type="text" class="form-control" id="peTitle" required />
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label>Category *</label>
+            <select class="form-control" id="peCategory">
+              <option value="hydrology">Hydrology &amp; Flood</option>
+              <option value="remote-sensing">Remote Sensing</option>
+              <option value="land-use">Land Use &amp; Planning</option>
+              <option value="web-gis">Web GIS</option>
+              <option value="3d">3D &amp; Terrain</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Year / Software Badge</label>
+            <input type="text" class="form-control" id="peBadge" placeholder="e.g. 2026 • ArcGIS Pro" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Short Summary *</label>
+          <input type="text" class="form-control" id="peShortDesc" required />
+        </div>
+        <div class="form-group">
+          <label>Detailed Technical Methodology &amp; Findings</label>
+          <textarea class="form-control" id="peFullDesc" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Upload Preview Map Image(s) (JPG/PNG)</label>
+          <input type="file" class="form-control" id="peImageFiles" accept="image/*" multiple />
+        </div>
+        <div class="form-group">
+          <label>Upload High-Resolution Downloadable Map (JPG/PNG/PDF - Email Locked)</label>
+          <input type="file" class="form-control" id="peHighResFile" accept="image/*,.pdf,.zip" />
+        </div>
+        <div class="form-group">
+          <label>Upload Project Technical Report (PDF Reader)</label>
+          <input type="file" class="form-control" id="peReportPdfFile" accept=".pdf" />
+        </div>
+        <div class="form-group">
+          <label>Interactive Web Map URL (Optional - ArcGIS Online / Leaflet)</label>
+          <input type="url" class="form-control" id="peWebMapUrl" placeholder="https://..." />
+        </div>
+        <button type="submit" class="btn-primary" id="peSaveBtn" style="width:100%; justify-content:center;">Publish to Portfolio</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 5: ADMIN ADD CERTIFICATE (PUBLIC OR LOCKED VAULT)
+       ============================================================ -->
+  <div class="modal-overlay" id="certEditorModal">
+    <div class="modal-box" style="max-width:520px;">
+      <button class="modal-close" onclick="closeModal('certEditorModal')">✕</button>
+      <h3 style="font-family:'Cinzel',serif; margin-bottom:1rem;">Add Certificate to Vault</h3>
+      <form onsubmit="saveCertToSupabase(event)">
+        <div class="form-group">
+          <label>Certificate Title *</label>
+          <input type="text" class="form-control" id="ceTitle" required placeholder="e.g. Python for Everyone — Esri" />
+        </div>
+        <div class="form-group">
+          <label>Issuing Organization *</label>
+          <input type="text" class="form-control" id="ceIssuer" required placeholder="e.g. Esri / University of Moratuwa" />
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label>Issue Date</label>
+            <input type="text" class="form-control" id="ceDate" placeholder="2026" />
+          </div>
+          <div class="form-group">
+            <label>Visibility / Lock Status *</label>
+            <select class="form-control" id="ceLocked">
+              <option value="false">🌐 Public Showcase (Visible to All)</option>
+              <option value="true">🔒 Locked Vault (Admin Only)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Upload Certificate Image or PDF *</label>
+          <input type="file" class="form-control" id="ceFile" accept="image/*,.pdf" required />
+        </div>
+        <button type="submit" class="btn-primary" id="ceSaveBtn" style="width:100%; justify-content:center;">Upload Credential</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 6: ADMIN DOWNLOAD LOGS VIEWER
+       ============================================================ -->
+  <div class="modal-overlay" id="logsModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('logsModal')">✕</button>
+      <span class="eyebrow">Email Tracking &amp; Analytics</span>
+      <h3 style="font-family:'Cinzel',serif; margin-bottom:1rem;">High-Res Map Download Logs</h3>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date &amp; Time</th>
+              <th>User Name</th>
+              <th>Email Address</th>
+              <th>Downloaded Item</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody id="downloadLogsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 H.G. Prasanna Indrajith Karunathilaka • BSc (Hons) GIS Portfolio • University of Peradeniya, Sri Lanka.</p>
+  </footer>
+
+  <!-- ============================================================
+       JAVASCRIPT: SUPABASE, THEME SWITCHER, EMAIL GATE & NOTIFICATIONS
+       ============================================================ -->
+  <script>
+    // 1. CONFIGURATION (Supabase + Your Web3Forms Access Key)
+    const SUPABASE_URL = 'https://qwrrrivrvidcguznjaic.supabase.co';
+    const SUPABASE_ANON_KEY = 'PASTE_YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY_HERE'; // <-- Replace with your Supabase anon/publishable key
+    const WEB3FORMS_ACCESS_KEY = 'aeb16571-c318-4920-b4e6-1bc6c032a47c';
+
+    let sb = null;
+    if (SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('PASTE_YOUR')) {
+      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+
+    let isAdmin = false;
+    let currentFilter = 'all';
+    let currentSlideImages = [];
+    let currentSlideIdx = 0;
+    let pendingDownloadItem = null;
+
+    // Built-in Starter Projects (Preserves your existing maps + adds Sri Lanka thesis/projects)
+    const defaultProjects = [
+      {
+        id: 'def-1',
+        title: 'Compound Flood Vulnerability: Ulapane to Gelioya Reach',
+        category: 'hydrology',
+        cat_label: 'Hydrology & Flood',
+        badge: '2026 • HEC-HMS & HEC-RAS',
+        short_desc: 'Coupled hydrological-hydraulic flood inundation modeling under extreme rainfall and upstream dam releases along the Mahaweli River.',
+        full_desc: 'Integrated HEC-HMS rainfall-runoff modeling with HEC-RAS unsteady flow routing and high-resolution DEMs to delineate compound flood hazard zones between Ulapane and Gelioya.',
+        images: ['images/National Water Distribution Network in the Dry Zone of Sri Lanka.jpg'],
+        high_res_url: 'images/National Water Distribution Network in the Dry Zone of Sri Lanka.jpg',
+        report_pdf_url: '',
+        web_map_url: '',
+        is_web_map: false
+      },
+      {
+        id: 'def-2',
+        title: 'Global Seismic & Tectonic Risk Web Application',
+        category: 'web-gis',
+        cat_label: 'Web GIS',
+        badge: '2026 • ArcGIS Online',
+        short_desc: 'Interactive cloud Web GIS application visualizing global seismic activity, fault lines, and real-time earthquake magnitudes.',
+        full_desc: 'Built on ArcGIS Online using Esri Living Atlas feeds to provide interactive spatial filtering and magnitude popups.',
+        images: ['images/1.png', 'images/2.PNG'],
+        high_res_url: 'images/1.png',
+        report_pdf_url: '',
+        web_map_url: 'https://arcg.is/1z8Xub4',
+        is_web_map: true
+      },
+      {
+        id: 'def-3',
+        title: 'Land Use & Land Cover Classification — Kandy DS',
+        category: 'land-use',
+        cat_label: 'Land Use & Planning',
+        badge: '2025 • Sentinel-2 / ArcGIS Pro',
+        short_desc: 'Supervised multi-spectral image classification quantifying urban expansion, forest cover, and agricultural zones in Kandy.',
+        full_desc: 'Performed supervised maximum-likelihood classification on 10m Sentinel-2 imagery with accuracy assessment and area statistics.',
+        images: ['images/Land Use and Land Cover Map of Kandy DS.jpg'],
+        high_res_url: 'images/Land Use and Land Cover Map of Kandy DS.jpg',
+        report_pdf_url: '',
+        web_map_url: '',
+        is_web_map: false
+      },
+      {
+        id: 'def-4',
+        title: '3D Terrain & Viewshed Modeling — Kothmale / Palk Bay',
+        category: '3d',
+        cat_label: '3D & Terrain',
+        badge: '2025 • ALOS PALSAR 12.5m',
+        short_desc: '3D relief visualization, bathymetric extrusion, and line-of-sight viewshed modeling using digital elevation models.',
+        full_desc: 'Generated multi-directional hillshades, 3D local scenes in ArcGIS Pro, and observer line-of-sight visibility corridors.',
+        images: ['images/3D model.jpg', 'images/finished map.jpg', 'images/crater lake.jpg'],
+        high_res_url: 'images/3D model.jpg',
+        report_pdf_url: '',
+        web_map_url: '',
+        is_web_map: false
+      }
+    ];
+
+    const defaultCertificates = [
+      {
+        id: 'cert-1',
+        title: 'Python for Everyone — Geospatial Automation',
+        issuer: 'Esri Academy',
+        issue_date: '2026',
+        file_url: 'https://via.placeholder.com/600x400/0d1627/00e5ff?text=Esri+Python+Certification',
+        is_locked: false
+      },
+      {
+        id: 'cert-2',
+        title: 'Python Programming Foundations',
+        issuer: 'University of Moratuwa',
+        issue_date: '2026',
+        file_url: 'https://via.placeholder.com/600x400/0d1627/10b981?text=University+of+Moratuwa+Certificate',
+        is_locked: false
+      },
+      {
+        id: 'cert-3',
+        title: 'AI Fundamentals Certificate Programme',
+        issuer: 'LEARN & AVPN',
+        issue_date: '2026',
+        file_url: 'https://via.placeholder.com/600x400/0d1627/eab308?text=LEARN+%26+AVPN+AI+Certificate',
+        is_locked: false
+      }
+    ];
+
+    const defaultSources = [
+      { code: '[S01]', name: 'Survey Department of Sri Lanka (LiDAR & 1:10,000 Topographic Data)', type: 'LiDAR / Vector', provider: 'Survey Dept. SL', url: 'https://www.survey.gov.lk/' },
+      { code: '[S02]', name: 'Copernicus Data Space Ecosystem (Sentinel-1 SAR & Sentinel-2)', type: 'Satellite Raster', provider: 'ESA', url: 'https://dataspace.copernicus.eu/' },
+      { code: '[S03]', name: 'USGS EarthExplorer (Landsat 8/9 & SRTM DEM)', type: 'Multispectral / DEM', provider: 'USGS', url: 'https://earthexplorer.usgs.gov/' },
+      { code: '[S04]', name: 'Alaska Satellite Facility (ALOS PALSAR 12.5m DEM)', type: 'Terrain / SAR', provider: 'NASA / JAXA', url: 'https://asf.alaska.edu/' },
+      { code: '[S05]', name: 'Google Earth Engine Data Catalog', type: 'Cloud EO Archive', provider: 'Google', url: 'https://earthengine.google.com/' }
+    ];
+
+    let allProjects = [...defaultProjects];
+    let allCertificates = [...defaultCertificates];
+
+    // ============================================================
+    // 2. THEME & COLOR SWITCHER
+    // ============================================================
+    function toggleThemeMenu() {
+      document.getElementById('themeMenu').classList.toggle('open');
+    }
+
+    function setTheme(themeName) {
+      document.documentElement.setAttribute('data-theme', themeName);
+      localStorage.setItem('gis_portfolio_theme', themeName);
+      document.querySelectorAll('.theme-option').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.t === themeName);
+      });
+      document.getElementById('themeMenu').classList.remove('open');
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('gis_portfolio_theme') || 'navy';
+    setTheme(savedTheme);
+
+    // Close theme menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.nav-actions')) {
+        document.getElementById('themeMenu').classList.remove('open');
+      }
+    });
+
+    // Live Cursor Coordinates (Centered around Peradeniya / Kothmale)
+    document.addEventListener('mousemove', (e) => {
+      const lat = (7.2546 + (0.5 - e.clientY / window.innerHeight) * 0.12).toFixed(4);
+      const lon = (80.5974 + (e.clientX / window.innerWidth - 0.5) * 0.12).toFixed(4);
+      const el = document.getElementById('liveLatLon');
+      if (el) el.textContent = `${lat}° N, ${lon}° E`;
+    });
+
+    // ============================================================
+    // 3. PAGE NAVIGATION & MODALS
+    // ============================================================
+    function switchPage(pageId) {
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + pageId).classList.add('active');
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.page === pageId);
+      });
+      document.getElementById('navLinks').classList.remove('open');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    // Keyboard shortcut Ctrl + Shift + L for Admin Login
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'l') {
+        openAdminLogin();
+      }
+    });
+
+    // ============================================================
+    // 4. SUPABASE DATA LOADING & AUTHENTICATION
+    // ============================================================
+    async function initPortfolio() {
+      renderSourcesTable();
+      if (sb) {
+        const { data: { session } } = await sb.auth.getSession();
+        setAdminUI(!!session);
+
+        // Fetch Cloud Projects
+        const { data: dbProjects } = await sb.from('projects').select('*').order('created_at', { ascending: false });
+        if (dbProjects && dbProjects.length > 0) {
+          allProjects = [...dbProjects, ...defaultProjects];
+        }
+
+        // Fetch Certificates (RLS automatically hides locked ones unless logged in as Admin)
+        const { data: dbCerts } = await sb.from('certificates').select('*').order('created_at', { ascending: false });
+        if (dbCerts && dbCerts.length > 0) {
+          allCertificates = [...dbCerts, ...defaultCertificates];
+        }
+      }
+      updateStats();
+      injectGoogleMapSchema();
+      renderGallery();
+      renderWebMaps();
+      renderCertificates();
+    }
+    function injectGoogleMapSchema() {
+      const existing = document.getElementById('gis-jsonld-schema');
+      if (existing) existing.remove();
+
+      const schemaItems = allProjects.map((proj, index) => {
+        const imgUrl = (proj.images && proj.images.length > 0) ? proj.images[0] : '';
+        return {
+          "@type": "ListItem",
+          "position": index + 1,
+          "item": {
+            "@type": "Dataset",
+            "name": proj.title,
+            "description": proj.short_desc || proj.full_desc || proj.title,
+            "keywords": [proj.cat_label, "Sri Lanka GIS Map", "Cartography", proj.badge],
+            "creator": {
+              "@type": "Person",
+              "name": "H.G. Prasanna Indrajith Karunathilaka"
+            },
+            "image": {
+              "@type": "ImageObject",
+              "contentUrl": imgUrl,
+              "name": proj.title,
+              "caption": `${proj.title} - ${proj.cat_label} (${proj.badge})`
+            }
+          }
+        };
+      });
+
+      const script = document.createElement('script');
+      script.id = 'gis-jsonld-schema';
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Sri Lanka GIS & Spatial Map Gallery",
+        "itemListElement": schemaItems
+      });
+      document.head.appendChild(script);
+    }
+    function setAdminUI(loggedIn) {
+      isAdmin = loggedIn;
+      const btn = document.getElementById('adminLockBtn');
+      const bar = document.getElementById('adminBar');
+      const vaultBtn = document.getElementById('unlockVaultBtn');
+      if (loggedIn) {
+        btn.textContent = '🔓 Admin';
+        btn.classList.add('logged-in');
+        bar.classList.add('visible');
+        if (vaultBtn) vaultBtn.style.display = 'none';
+      } else {
+        btn.textContent = '🔒 Admin';
+        btn.classList.remove('logged-in');
+        bar.classList.remove('visible');
+        if (vaultBtn) vaultBtn.style.display = 'inline-flex';
+      }
+    }
+
+    function openAdminLogin() {
+      if (isAdmin) return;
+      document.getElementById('adminLoginModal').classList.add('open');
+    }
+
+    async function handleAdminLogin(e) {
+      e.preventDefault();
+      if (!sb) {
+        alert('Please paste your Supabase Anon/Publishable Key into the HTML script first.');
+        return;
+      }
+      const email = document.getElementById('adminEmail').value.trim();
+      const password = document.getElementById('adminPass').value;
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) {
+        alert('Login Failed: ' + error.message);
+      } else {
+        closeModal('adminLoginModal');
+        await initPortfolio();
+      }
+    }
+
+    async function adminLogout() {
+      if (sb) await sb.auth.signOut();
+      allCertificates = [...defaultCertificates];
+      setAdminUI(false);
+      renderCertificates();
+    }
+
+    function updateStats() {
+      document.getElementById('statProjectsCount').textContent = allProjects.length;
+      document.getElementById('statWebMapsCount').textContent = allProjects.filter(p => p.web_map_url || p.is_web_map).length;
+      document.getElementById('statCertsCount').textContent = allCertificates.length;
+    }
+
+    // ============================================================
+    // 5. RENDER GALLERY, FEATURED PROJECTS & WEB MAPS
+    // ============================================================
+    function filterGallery(cat, btn) {
+      currentFilter = cat;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGallery();
+    }
+
+    function createProjectCardHTML(proj) {
+      const thumb = (proj.images && proj.images.length > 0) ? proj.images[0] : 'https://via.placeholder.com/600x400/0d1627/00e5ff?text=GIS+Spatial+Output';
+      const multiCount = proj.images && proj.images.length > 1 ? `<span class="card-multi-badge">🗂 ${proj.images.length} Plates</span>` : '';
+      const pdfBadge = proj.report_pdf_url ? ' • 📄 PDF' : '';
+      const delBtn = (isAdmin && !String(proj.id).startsWith('def-'))
+        ? `<button class="btn-card" style="border-color:#ef4444;color:#ef4444;" onclick="deleteProject('${proj.id}')">🗑</button>`
+        : '';
+
+      return `
+        <article class="map-card">
+          <div class="card-thumb" onclick="openProjectModal('${proj.id}')">
+            <img src="${thumb}" alt="${proj.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/600x400/0d1627/00e5ff?text=Spatial+Map'" />
+            <span class="card-cat-badge">${proj.cat_label || proj.category}${pdfBadge}</span>
+            ${multiCount}
+          </div>
+          <div class="card-body">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--accent); margin-bottom:4px;">${proj.badge || ''}</div>
+            <h3 class="card-title" onclick="openProjectModal('${proj.id}')">${proj.title}</h3>
+            <p class="card-desc">${proj.short_desc || ''}</p>
+            <div class="card-actions">
+              <button class="btn-card" onclick="openProjectModal('${proj.id}')">👁 Inspect${proj.report_pdf_url ? ' &amp; PDF' : ''}</button>
+              <button class="btn-lock-dl" onclick="triggerDownloadLock('${proj.id}')">🔒 High-Res Map</button>
+              ${delBtn}
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderGallery() {
+      // Home Featured (Top 3)
+      const homeGrid = document.getElementById('homeFeaturedGrid');
+      if (homeGrid) {
+        homeGrid.innerHTML = allProjects.slice(0, 3).map(createProjectCardHTML).join('');
+      }
+
+      // Full Gallery with Filter & Search
+      const query = (document.getElementById('gallerySearch')?.value || '').toLowerCase();
+      const filtered = allProjects.filter(p => {
+        const matchCat = currentFilter === 'all' || p.category === currentFilter;
+        const matchSearch = !query ||
+          p.title.toLowerCase().includes(query) ||
+          (p.short_desc || '').toLowerCase().includes(query) ||
+          (p.badge || '').toLowerCase().includes(query);
+        return matchCat && matchSearch;
+      });
+
+      const grid = document.getElementById('galleryGrid');
+      grid.innerHTML = filtered.length
+        ? filtered.map(createProjectCardHTML).join('')
+        : '<p style="color:var(--text-muted);">No matching maps found.</p>';
+    }
+
+    function renderWebMaps() {
+      const webMaps = allProjects.filter(p => p.web_map_url || p.is_web_map || p.category === 'web-gis');
+      const container = document.getElementById('webMapsContainer');
+      if (!webMaps.length) {
+        container.innerHTML = '<p style="color:var(--text-muted);">No interactive web maps published yet.</p>';
+        return;
+      }
+      container.innerHTML = webMaps.map(wm => `
+        <div class="pillar-card" style="padding:1.5rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
+            <div>
+              <span class="eyebrow">${wm.badge || 'Interactive Web GIS'}</span>
+              <h3 style="font-family:'Cinzel',serif; font-size:1.35rem;">${wm.title}</h3>
+              <p style="margin-bottom:0;">${wm.short_desc}</p>
+            </div>
+            <div style="display:flex; gap:10px;">
+              ${wm.web_map_url ? `<a href="${wm.web_map_url}" target="_blank" class="btn-primary">Open Fullscreen ↗</a>` : ''}
+              <button class="btn-lock-dl" onclick="triggerDownloadLock('${wm.id}')">🔒 Download Map</button>
+            </div>
+          </div>
+          ${wm.web_map_url ? `<iframe src="${wm.web_map_url}" style="width:100%; height:480px; border:1px solid var(--border-strong); border-radius:12px;" loading="lazy"></iframe>` : ''}
+        </div>
+      `).join('');
+    }
+
+    // ============================================================
+    // 6. PROJECT MODAL, IMAGE SLIDER & BUILT-IN PDF REPORT VIEWER
+    // ============================================================
+    function openProjectModal(id) {
+      const proj = allProjects.find(p => String(p.id) === String(id));
+      if (!proj) return;
+
+      document.getElementById('pmCat').textContent = `${proj.cat_label || proj.category} • ${proj.badge || ''}`;
+      document.getElementById('pmTitle').textContent = proj.title;
+      document.getElementById('pmDesc').textContent = proj.full_desc || proj.short_desc || '';
+
+      // Setup Slider
+      currentSlideImages = (proj.images && proj.images.length > 0) ? proj.images : ['https://via.placeholder.com/800x450/0d1627/00e5ff?text=Spatial+Output'];
+      currentSlideIdx = 0;
+      updateSliderDisplay();
+
+      // Setup Gated Download Button
+      document.getElementById('pmUnlockDownloadBtn').onclick = () => {
+        closeModal('projectModal');
+        triggerDownloadLock(proj.id);
+      };
+
+      // Setup Built-in PDF Report Reader
+      const pdfBtn = document.getElementById('pmTogglePdfBtn');
+      const pdfBox = document.getElementById('pmPdfContainer');
+      const pdfFrame = document.getElementById('pmPdfFrame');
+      pdfBox.style.display = 'none';
+      if (proj.report_pdf_url) {
+        pdfBtn.style.display = 'inline-flex';
+        pdfFrame.src = proj.report_pdf_url;
+      } else {
+        pdfBtn.style.display = 'none';
+        pdfFrame.src = '';
+      }
+
+      // Setup Web Map Link
+      const wmLink = document.getElementById('pmWebMapLink');
+      if (proj.web_map_url) {
+        wmLink.style.display = 'inline-flex';
+        wmLink.href = proj.web_map_url;
+      } else {
+        wmLink.style.display = 'none';
+      }
+
+      document.getElementById('projectModal').classList.add('open');
+    }
+
+    function updateSliderDisplay() {
+      document.getElementById('pmSliderImg').src = currentSlideImages[currentSlideIdx];
+      const showNav = currentSlideImages.length > 1;
+      document.getElementById('pmPrevBtn').style.display = showNav ? 'block' : 'none';
+      document.getElementById('pmNextBtn').style.display = showNav ? 'block' : 'none';
+      document.getElementById('pmSlideCounter').textContent = showNav
+        ? `Plate ${currentSlideIdx + 1} of ${currentSlideImages.length}`
+        : '';
+    }
+
+    function slideImage(dir) {
+      currentSlideIdx = (currentSlideIdx + dir + currentSlideImages.length) % currentSlideImages.length;
+      updateSliderDisplay();
+    }
+
+    function togglePdfFrame() {
+      const box = document.getElementById('pmPdfContainer');
+      box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // ============================================================
+    // 7. EMAIL-GATED HIGH-RES DOWNLOAD LOCK & WEB3FORMS ALERT
+    // ============================================================
+    function triggerDownloadLock(projId) {
+      const proj = allProjects.find(p => String(p.id) === String(projId));
+      if (!proj) return;
+      const downloadUrl = proj.high_res_url || (proj.images && proj.images[0]) || proj.report_pdf_url;
+      if (!downloadUrl) {
+        alert('High-resolution file is not attached for this item yet.');
+        return;
+      }
+
+      pendingDownloadItem = {
+        title: proj.title,
+        url: downloadUrl,
+        type: 'High-Res Spatial Map'
+      };
+      document.getElementById('dgItemTitle').textContent = proj.title;
+
+      // Pre-fill if visitor already verified email in this browser
+      const savedEmail = localStorage.getItem('gis_visitor_email');
+      const savedName = localStorage.getItem('gis_visitor_name');
+      if (savedEmail) document.getElementById('dgEmail').value = savedEmail;
+      if (savedName) document.getElementById('dgName').value = savedName;
+
+      document.getElementById('downloadGateModal').classList.add('open');
+    }
+
+    async function handleGatedDownload(e) {
+      e.preventDefault();
+      if (!pendingDownloadItem) return;
+
+      const btn = document.getElementById('dgSubmitBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Unlocking & Logging...';
+
+      const userName = document.getElementById('dgName').value.trim();
+      const userEmail = document.getElementById('dgEmail').value.trim();
+      const purpose = document.getElementById('dgPurpose').value;
+
+      localStorage.setItem('gis_visitor_name', userName);
+      localStorage.setItem('gis_visitor_email', userEmail);
+
+      // 1. Log download into Supabase `download_logs`
+      if (sb) {
+        await sb.from('download_logs').insert([{
+          user_name: userName,
+          user_email: userEmail,
+          purpose: purpose,
+          item_title: pendingDownloadItem.title,
+          item_type: pendingDownloadItem.type
+        }]);
+      }
+
+      // 2. Send Instant Email Notification to You via Web3Forms
+      try {
+        await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            access_key: WEB3FORMS_ACCESS_KEY,
+            subject: `📥 GIS Portfolio Download: ${pendingDownloadItem.title}`,
+            from_name: 'GeoSpatial Insight Portfolio',
+            User_Name: userName,
+            User_Email: userEmail,
+            Downloaded_Item: pendingDownloadItem.title,
+            Purpose: purpose,
+            Timestamp: new Date().toLocaleString()
+          })
+        });
+      } catch (err) {
+        console.warn('Email notification skipped:', err);
+      }
+
+      // 3. Trigger File Download / Open High-Res File
+      const a = document.createElement('a');
+      a.href = pendingDownloadItem.url;
+      a.target = '_blank';
+      a.download = pendingDownloadItem.title.replace(/[^a-z0-9]/gi, '_') + '_HighRes';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      btn.disabled = false;
+      btn.textContent = '🔓 Verify Email & Start Download';
+      closeModal('downloadGateModal');
+    }
+
+    // ============================================================
+    // 8. CERTIFICATES VAULT (PUBLIC + LOCKED) & SOURCES
+    // ============================================================
+    function renderCertificates() {
+      const pubCerts = allCertificates.filter(c => !c.is_locked);
+      const lockedCerts = allCertificates.filter(c => c.is_locked);
+
+      document.getElementById('publicCertGrid').innerHTML = pubCerts.map(c => `
+        <div class="cert-card" oncontextmenu="return false;">
+          <div class="cert-preview">
+            <img src="${c.file_url}" alt="${c.title}" />
+            <div class="cert-watermark">
+              <span>VERIFIED • ${c.issue_date || '2026'}</span>
+              <span>PREVIEW ONLY</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <span class="eyebrow">${c.issuer}</span>
+            <h4 style="font-size:0.98rem;">${c.title}</h4>
+          </div>
+        </div>
+      `).join('');
+
+      const lockedGrid = document.getElementById('lockedCertGrid');
+      if (!isAdmin) {
+        lockedGrid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align:center; padding:1.5rem; color:var(--text-muted); font-family:'JetBrains Mono',monospace; font-size:0.8rem;">
+            🔐 Vault Contents Encrypted — Admin Authentication Required to View Protected Credentials.
+          </div>
+        `;
+      } else {
+        lockedGrid.innerHTML = lockedCerts.length
+          ? lockedCerts.map(c => `
+              <div class="cert-card" style="border-color:var(--gold);">
+                <div class="cert-preview">
+                  <img src="${c.file_url}" alt="${c.title}" />
+                  <div class="cert-watermark" style="color:var(--gold);">
+                    <span>🔒 LOCKED VAULT</span>
+                    <a href="${c.file_url}" target="_blank" style="color:#fff;text-decoration:underline;">Open File</a>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <span class="eyebrow" style="color:var(--gold);">${c.issuer}</span>
+                  <h4>${c.title}</h4>
+                  <button class="btn-card" style="margin-top:8px;border-color:#ef4444;color:#ef4444;" onclick="deleteCert('${c.id}')">Delete</button>
+                </div>
+              </div>
+            `).join('')
+          : '<p style="color:var(--text-muted);">No locked certificates uploaded yet.</p>';
+      }
+    }
+
+    function renderSourcesTable() {
+      document.getElementById('sourcesTableBody').innerHTML = defaultSources.map(s => `
+        <tr>
+          <td style="font-family:'JetBrains Mono',monospace;color:var(--accent);">${s.code}</td>
+          <td><strong>${s.name}</strong></td>
+          <td>${s.type}</td>
+          <td>${s.provider}</td>
+          <td><a href="${s.url}" target="_blank" style="color:var(--accent);text-decoration:none;">Access Portal ↗</a></td>
+        </tr>
+      `).join('');
+    }
+
+    // ============================================================
+    // 9. ADMIN UPLOAD HELPERS (SUPABASE STORAGE + DATABASE)
+    // ============================================================
+    async function uploadToBucket(file) {
+      const cleanName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+      const { error } = await sb.storage.from('map-images').upload(cleanName, file);
+      if (error) throw error;
+      const { data } = sb.storage.from('map-images').getPublicUrl(cleanName);
+      return data.publicUrl;
+    }
+
+    function openProjectEditor() {
+      document.getElementById('projectEditorModal').classList.add('open');
+    }
+
+    async function saveProjectToSupabase(e) {
+      e.preventDefault();
+      if (!sb || !isAdmin) return;
+      const btn = document.getElementById('peSaveBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Uploading Files to Cloud...';
+
+      try {
+        const imgFiles = document.getElementById('peImageFiles').files;
+        const uploadedImgs = [];
+        for (const f of imgFiles) {
+          uploadedImgs.push(await uploadToBucket(f));
+        }
+
+        const highResFile = document.getElementById('peHighResFile').files[0];
+        const highResUrl = highResFile ? await uploadToBucket(highResFile) : (uploadedImgs[0] || '');
+
+        const pdfFile = document.getElementById('peReportPdfFile').files[0];
+        const pdfUrl = pdfFile ? await uploadToBucket(pdfFile) : '';
+
+        const catSel = document.getElementById('peCategory');
+        const webUrl = document.getElementById('peWebMapUrl').value.trim();
+
+        const { error } = await sb.from('projects').insert([{
+          title: document.getElementById('peTitle').value.trim(),
+          category: catSel.value,
+          cat_label: catSel.options[catSel.selectedIndex].text,
+          badge: document.getElementById('peBadge').value.trim(),
+          short_desc: document.getElementById('peShortDesc').value.trim(),
+          full_desc: document.getElementById('peFullDesc').value.trim(),
+          images: uploadedImgs,
+          high_res_url: highResUrl,
+          report_pdf_url: pdfUrl,
+          web_map_url: webUrl,
+          is_web_map: !!webUrl || catSel.value === 'web-gis'
+        }]);
+
+        if (error) throw error;
+        closeModal('projectEditorModal');
+        e.target.reset();
+        await initPortfolio();
+        alert('Project published successfully!');
+      } catch (err) {
+        alert('Upload Error: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Publish to Portfolio';
+      }
+    }
+
+    async function deleteProject(id) {
+      if (!confirm('Delete this project permanently?')) return;
+      await sb.from('projects').delete().eq('id', id);
+      await initPortfolio();
+    }
+
+    function openCertEditor() {
+      document.getElementById('certEditorModal').classList.add('open');
+    }
+
+    async function saveCertToSupabase(e) {
+      e.preventDefault();
+      if (!sb || !isAdmin) return;
+      const btn = document.getElementById('ceSaveBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Uploading Credential...';
+
+      try {
+        const file = document.getElementById('ceFile').files[0];
+        const fileUrl = await uploadToBucket(file);
+        const { error } = await sb.from('certificates').insert([{
+          title: document.getElementById('ceTitle').value.trim(),
+          issuer: document.getElementById('ceIssuer').value.trim(),
+          issue_date: document.getElementById('ceDate').value.trim(),
+          file_url: fileUrl,
+          is_locked: document.getElementById('ceLocked').value === 'true'
+        }]);
+        if (error) throw error;
+        closeModal('certEditorModal');
+        e.target.reset();
+        await initPortfolio();
+        alert('Certificate added to Vault!');
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Upload Credential';
+      }
+    }
+
+    async function deleteCert(id) {
+      if (!confirm('Delete this certificate?')) return;
+      await sb.from('certificates').delete().eq('id', id);
+      await initPortfolio();
+    }
+
+    async function openLogsModal() {
+      if (!sb || !isAdmin) return;
+      const { data } = await sb.from('download_logs').select('*').order('downloaded_at', { ascending: false });
+      const tbody = document.getElementById('downloadLogsBody');
+      tbody.innerHTML = (data && data.length)
+        ? data.map(row => `
+            <tr>
+              <td>${new Date(row.downloaded_at).toLocaleString()}</td>
+              <td><strong>${row.user_name}</strong></td>
+              <td style="color:var(--accent);">${row.user_email}</td>
+              <td>${row.item_title}</td>
+              <td>${row.purpose || ''}</td>
+            </tr>
+          `).join('')
+        : '<tr><td colspan="5">No downloads recorded yet.</td></tr>';
+      document.getElementById('logsModal').classList.add('open');
+    }
+
+    // Boot Application
+    initPortfolio();
+  </script>
+</body>
+</html>
